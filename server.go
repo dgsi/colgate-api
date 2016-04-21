@@ -24,9 +24,9 @@ func LoadAPIRoutes(r *gin.Engine, db *gorm.DB) {
 	//manage stations
 	stationHandler := h.NewStationHandler(db)
 	public.GET("/stations", stationHandler.Index)
-	public.POST("/station", stationHandler.Create)
-	public.PUT("/station/:station_id", stationHandler.Update)
-	public.POST("/station/auth", stationHandler.Login)
+	public.POST("/stations", stationHandler.Create)
+	public.PUT("/stations/:station_id", stationHandler.Update)
+	public.POST("/stations/auth", stationHandler.Login)
 
 	var port = os.Getenv("PORT")
 	if port == "" {
