@@ -42,6 +42,12 @@ func LoadAPIRoutes(r *gin.Engine, db *gorm.DB) {
 	public.POST("/items", itemHandler.Create)
 	public.PUT("/items/:item_id", itemHandler.Update)
 
+	//manage rewards
+	rewardsHanlder := h.NewRewardHandler(db)
+	public.GET("/rewards", rewardsHanlder.Index)
+	public.POST("/rewards", rewardsHanlder.Create)
+	public.GET("/rewards/:member_id", rewardsHanlder.GetRewardsByUser)
+
 	var port = os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
