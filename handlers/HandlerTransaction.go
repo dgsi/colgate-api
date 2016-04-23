@@ -89,7 +89,7 @@ func (handler TransactionHandler) ShowStationTransactions(c *gin.Context) {
 
 		if station.StationId != "" {	
 			query := []m.TransactionMember{}	
-			handler.db.Raw("SELECT t.id,m.member_id,m.member_fname,m.member_lname,m.member_country_region,m.member_city,m.member_email_address,m.member_mobile,t.station_id,t.date_created,t.date_updated FROM wp_members AS m INNER JOIN transaction as T ON t.member_id=m.member_id").Scan(&query)
+			handler.db.Raw("SELECT t.id,m.member_id,m.member_fname,m.member_lname,m.member_country_region,m.member_city,m.member_email_address,m.member_mobile,t.station_id,t.date_created,t.date_updated FROM wp_members WHERE t.station_id = ? AS m INNER JOIN transaction as T ON t.member_id=m.member_id",station_id).Scan(&query)
 			c.JSON(http.StatusOK, &query)
 		} else {
 			respond(http.StatusBadRequest,"Station not found!",c,true)
