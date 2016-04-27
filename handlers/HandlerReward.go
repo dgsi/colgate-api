@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"net/http"
-	"encoding/json"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -21,7 +20,7 @@ func NewRewardHandler(db *gorm.DB) *RewardHandler {
 // get all rewards
 func (handler RewardHandler) Index(c *gin.Context) {
 	rewards := []m.Reward{}	
-	handler.db.Table("reward").Find(&rewards)
+	handler.db.Raw("SELECT * from qry_rewards ORDER BY date_created DESC").Scan(&rewards)
 	c.JSON(http.StatusOK, &rewards)
 }
 
@@ -29,28 +28,34 @@ func (handler RewardHandler) Index(c *gin.Context) {
 func (handler RewardHandler) Create(c *gin.Context) {
 	now := time.Now().UTC()
 	member_id := c.PostForm("member_id")
-	items := c.PostForm("items")
 
-	reward := m.Reward{}
-	handler.db.Table("reward").Where("visitor_id = ?",member_id).First(&reward)
+	member := m.Member{}
+	handler.db.Table("wp_members").Where("member_id = ?",member_id).First(&member)
 
-	if (reward.VisitorId == "") {
-		itemRewards := []m.ItemReward{}
-		json.Unmarshal([]byte(items),&itemRewards);
+	if (member.MemberId != "") {
+		transaction := m.Transaction{}
+		handler.db.Table("transaction").Where("member_id = ?",member_id).First(&transaction)	
 
-		for _,item := range itemRewards {
-			item_name := item.ItemName
-			handler.db.Exec("INSERT INTO reward VALUES (null,?,?,?,?,?)",member_id,item_name,1,now,now)
+		if transaction.MemberId == "" {
+			respond(http.StatusBadRequest,"Visitor must visit atleast 1 zone",c,true)	
+		} else {
+			reward := m.Reward{}
+			handler.db.Table("reward").Where("visitor_id = ?",member_id).First(&reward)
+			if (reward.VisitorId == "") {
+				handler.db.Exec("INSERT INTO reward VALUES (null,?,'n/a',?,?,?)",member_id,0,now,now)
+				respond(http.StatusCreated,"Rewards successfully claimed by user",c,false)	
+			} else {
+				respond(http.StatusBadRequest,"Visitor already claimed his/her reward!",c,true)
+			}
 		}
-		respond(http.StatusCreated,"Rewards successfully claimed by user",c,false)	
 	} else {
-		respond(http.StatusBadRequest,"Visitor already claimed his/her reward!",c,true)
+		respond(http.StatusBadRequest,"Member not found!",c,true)
 	}
 }
 
 func (handler RewardHandler) GetRewardsByUser(c *gin.Context) {
 	member_id := c.Param("member_id")
 	rewards := []m.Reward{}
-	handler.db.Table("reward").Where("visitor_id = ?",member_id).Find(&rewards)
+	handler.db.Table("qry_rewards").Where("visitor_id = ?",member_id).Find(&rewards)
 	c.JSON(http.StatusOK,rewards);
 }

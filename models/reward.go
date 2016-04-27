@@ -1,4 +1,4 @@
-package models
+	package models
 
 import (
 	"time"
@@ -6,9 +6,11 @@ import (
 
 type Reward struct {
 	Id int `json:"id"`
-	VisitorId  string `form:"member_id" json:"member_id" binding:"required"`
-	ItemId  string `form:"item_id" json:"item_id" binding:"required"`
-	Qty  int `form:"qty" json:"qty" binding:"required"`
+	VisitorId  string `json:"member_id"`
+	Member_Name  string `json:"name"`	
+	Member_Country_Region string `json:"country"`
+	Member_City  string `json:"city"`
+	Member_Email_Address  string `json:"email"`
+	Member_Mobile  string `json:"mobile"`
 	DateCreated time.Time `json:"date_created"`
-	DateUpdated time.Time `json:"date_updated"`
 }
