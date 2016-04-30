@@ -10,6 +10,7 @@ import (
 	 h "colgate/dgsi/api/handlers"
 	 "colgate/dgsi/api/config"
 	"github.com/jinzhu/gorm"
+	"github.com/gin-gonic/contrib/jwt"
 )
 
 func main() {
@@ -18,35 +19,41 @@ func main() {
 	LoadAPIRoutes(router, &db)
 }
 
+var (
+	mysupersecretpassword = "unicornsAreAwesome"
+)
+
 func LoadAPIRoutes(r *gin.Engine, db *gorm.DB) {
+	private := r.Group("/api/v1")
 	public := r.Group("/api/v1")
+	private.Use(jwt.Auth(mysupersecretpassword))
 
 	//manage stations
 	stationHandler := h.NewStationHandler(db)
-	public.GET("/stations", stationHandler.Index)
-	public.POST("/stations", stationHandler.Create)
-	public.PUT("/stations/:station_id", stationHandler.Update)
+	private.GET("/stations", stationHandler.Index)
+	private.POST("/stations", stationHandler.Create)
+	private.PUT("/stations/:station_id", stationHandler.Update)
 	public.POST("/stations/auth", stationHandler.Login)
 
 	//manage transactions
 	transactionsHandler := h.NewTransactionHandler(db)
-	public.GET("/transactions", transactionsHandler.Index)
-	public.POST("/transactions", transactionsHandler.Create)
-	public.GET("/transactions/member/:member_id", transactionsHandler.ShowMemberTransactions)
-	public.GET("/transactions/stations/:station_id", transactionsHandler.ShowStationTransactions)
+	private.GET("/transactions", transactionsHandler.Index)
+	private.POST("/transactions", transactionsHandler.Create)
+	private.GET("/transactions/member/:member_id", transactionsHandler.ShowMemberTransactions)
+	private.GET("/transactions/stations/:station_id", transactionsHandler.ShowStationTransactions)
 
 	//manage items
 	itemHandler := h.NewItemHandler(db)
-	public.GET("/items", itemHandler.Index)
-	public.GET("/items/:item_id", itemHandler.Show)
-	public.POST("/items", itemHandler.Create)
-	public.PUT("/items/:item_id", itemHandler.Update)
+	private.GET("/items", itemHandler.Index)
+	private.GET("/items/:item_id", itemHandler.Show)
+	private.POST("/items", itemHandler.Create)
+	private.PUT("/items/:item_id", itemHandler.Update)
 
 	//manage rewards
 	rewardsHanlder := h.NewRewardHandler(db)
-	public.GET("/rewards", rewardsHanlder.Index)
-	public.POST("/rewards", rewardsHanlder.Create)
-	public.GET("/rewards/:member_id", rewardsHanlder.GetRewardsByUser)
+	private.GET("/rewards", rewardsHanlder.Index)
+	private.POST("/rewards", rewardsHanlder.Create)
+	private.GET("/rewards/:member_id", rewardsHanlder.GetRewardsByUser)
 
 	var port = os.Getenv("PORT")
 	if port == "" {

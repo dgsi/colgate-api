@@ -6,7 +6,12 @@ import (
 	
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
+	jwt_lib "github.com/dgrijalva/jwt-go"
 	m "colgate/dgsi/api/models"
+)
+
+var (
+	mysupersecretpassword = "unicornsAreAwesome"
 )
 
 type StationHandler struct {
@@ -19,6 +24,7 @@ func NewStationHandler(db *gorm.DB) *StationHandler {
 
 // get all stations
 func (handler StationHandler) Index(c *gin.Context) {
+
 	stations := []m.Station{}	
 	handler.db.Table("station").Find(&stations)
 	c.JSON(http.StatusOK, &stations)
@@ -74,7 +80,17 @@ func (handler StationHandler) Login(c *gin.Context) {
 		handler.db.Table("station").Where("station_id = ?",station_id).First(&station)
 
 		if station.StationId != "" {
-			c.JSON(http.StatusOK, station)
+			// Create the token
+			token := jwt_lib.New(jwt_lib.GetSigningMethod("HS256"))
+			// Set some claims
+			token.Claims["ID"] = station.StationId
+			token.Claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
+			// Sign and get the complete encoded token as a string
+			tokenString, err := token.SignedString([]byte(mysupersecretpassword))
+			if err != nil {
+				c.JSON(500, gin.H{"message": "Could not generate token"})
+			}
+			c.JSON(http.StatusOK, gin.H{"token": tokenString})
 		} else {
 			respond(http.StatusBadRequest,"Station not found!",c,true)	
 		}
