@@ -10,7 +10,7 @@ import (
 	 h "colgate/dgsi/api/handlers"
 	 "colgate/dgsi/api/config"
 	"github.com/jinzhu/gorm"
-	"github.com/gin-gonic/contrib/jwt"
+	//"github.com/gin-gonic/contrib/jwt"
 )
 
 func main() {
@@ -26,7 +26,7 @@ var (
 func LoadAPIRoutes(r *gin.Engine, db *gorm.DB) {
 	private := r.Group("/api/v1")
 	public := r.Group("/api/v1")
-	private.Use(jwt.Auth(mysupersecretpassword))
+	//private.Use(jwt.Auth(mysupersecretpassword))
 
 	//manage stations
 	stationHandler := h.NewStationHandler(db)
