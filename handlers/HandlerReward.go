@@ -3,6 +3,7 @@ package handlers
 import (
 	"net/http"
 	"time"
+	"fmt"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
@@ -33,11 +34,11 @@ func (handler RewardHandler) Create(c *gin.Context) {
 	handler.db.Table("wp_members").Where("member_id = ?",member_id).First(&member)
 
 	if (member.MemberId != "") {
-		transaction := m.Transaction{}
-		handler.db.Table("transaction").Where("member_id = ?",member_id).First(&transaction)	
+		transactions := []m.Transaction{}
+		handler.db.Table("transaction").Where("member_id = ?",member_id).Find(&transactions)	
 
-		if transaction.MemberId == "" {
-			respond(http.StatusBadRequest,"Visitor must visit atleast 1 zone",c,true)	
+		if len(transactions) < 4 {
+			respond(http.StatusBadRequest,"Visitor is required to visit all zones",c,true)	
 		} else {
 			reward := m.Reward{}
 			handler.db.Table("reward").Where("visitor_id = ?",member_id).First(&reward)

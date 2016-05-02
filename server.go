@@ -28,6 +28,13 @@ func LoadAPIRoutes(r *gin.Engine, db *gorm.DB) {
 	public := r.Group("/api/v1")
 	//private.Use(jwt.Auth(mysupersecretpassword))
 
+	//manage members
+	memberHandler := h.NewMemberHandler(db)
+	private.GET("/members", memberHandler.Index)
+	private.POST("/register", memberHandler.Create)
+	private.GET("/members/search", memberHandler.Search)
+	private.GET("/members/search/:member_id", memberHandler.SearchById)
+
 	//manage stations
 	stationHandler := h.NewStationHandler(db)
 	private.GET("/stations", stationHandler.Index)
