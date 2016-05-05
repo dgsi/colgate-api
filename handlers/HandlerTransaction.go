@@ -44,7 +44,9 @@ func (handler TransactionHandler) Create(c *gin.Context) {
 				
 				if transaction.MemberId == "" {
 					handler.db.Exec("INSERT INTO transaction VALUES (null,?,?,?,?,?)",member_id,s,now,now,transaction_type)
-				} 
+				} else {
+					handler.db.Exec("UPDATE transaction SET transaction_type = ? WHERE id = ? ","vip",transaction.Id)
+				}
 			}
 			respond(http.StatusCreated,"New transaction successfully created!",c,false)		
 		} else {

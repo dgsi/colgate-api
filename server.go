@@ -64,7 +64,7 @@ func LoadAPIRoutes(r *gin.Engine, db *gorm.DB) {
 
 	var port = os.Getenv("PORT")
 	if port == "" {
-		port = "8080"
+		port = "9000"
 	}
 	fmt.Println("PORT ---> ",port)
 	r.Run(fmt.Sprintf(":%s", port))
