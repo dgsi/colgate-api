@@ -47,7 +47,7 @@ func LoadAPIRoutes(r *gin.Engine, db *gorm.DB) {
 	private.GET("/transactions", transactionsHandler.Index)
 	private.POST("/transactions", transactionsHandler.Create)
 	private.GET("/transactions/member/:member_id", transactionsHandler.ShowMemberTransactions)
-	private.GET("/transactions/stations/:station_id", transactionsHandler.ShowStationTransactions)
+	private.GET("/transactions/stations/:station_id/:tx_type", transactionsHandler.ShowStationTransactions)
 
 	//manage items
 	itemHandler := h.NewItemHandler(db)

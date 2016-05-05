@@ -3,7 +3,6 @@ package handlers
 import (
 	"net/http"
 	"time"
-	"fmt"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
@@ -38,7 +37,7 @@ func (handler RewardHandler) Create(c *gin.Context) {
 		handler.db.Table("transaction").Where("member_id = ?",member_id).Find(&transactions)	
 
 		if len(transactions) < 4 {
-			respond(http.StatusBadRequest,"Visitor is required to visit all zones",c,true)	
+			c.JSON(http.StatusOK, &transactions)	
 		} else {
 			reward := m.Reward{}
 			handler.db.Table("reward").Where("visitor_id = ?",member_id).First(&reward)
@@ -46,7 +45,7 @@ func (handler RewardHandler) Create(c *gin.Context) {
 				handler.db.Exec("INSERT INTO reward VALUES (null,?,'n/a',?,?,?)",member_id,0,now,now)
 				respond(http.StatusCreated,"Rewards successfully claimed by user",c,false)	
 			} else {
-				respond(http.StatusBadRequest,"Visitor already claimed his/her reward!",c,true)
+				c.JSON(http.StatusOK, &transactions)
 			}
 		}
 	} else {

@@ -14,6 +14,7 @@ type TransactionMember struct {
 	MemberEmailAddress  string `json:"member_email_address"`
 	MemberMobile  string `json:"member_mobile"`
 	StationId  string `json:"station_id"`
+	TransactionType string `json:"transaction_type"`
 	DateCreated time.Time `json:"date_created"`
 	DateUpdated time.Time `json:"date_updated"`
 }
