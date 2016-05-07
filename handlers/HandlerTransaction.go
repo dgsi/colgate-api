@@ -3,7 +3,7 @@ package handlers
 import (
 	"net/http"
 	"time"
-	
+
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	m "colgate/dgsi/api/models"
@@ -37,18 +37,25 @@ func (handler TransactionHandler) Create(c *gin.Context) {
 		respond(http.StatusBadRequest,"Please supply the station id!",c,true)
 	} else {
 		if station_id == "all" {
-			stations := [4]string{"station001","station002","station003","station004"}
-			for _, s := range stations {
-				transaction := m.Transaction{}
-				handler.db.Table("transaction").Where("member_id = ? AND station_id = ?",member_id,s).First(&transaction)	
-				
-				if transaction.MemberId == "" {
-					handler.db.Exec("INSERT INTO transaction VALUES (null,?,?,?,?,?)",member_id,s,now,now,transaction_type)
-				} else {
-					handler.db.Exec("UPDATE transaction SET transaction_type = ? WHERE id = ? ","vip",transaction.Id)
+			member := m.Member{}
+			handler.db.Table("wp_members").Where("member_id = ?",member_id).First(&member)
+
+			if (member.MemberId != "") {
+				stations := [4]string{"station001","station002","station003","station004"}
+				for _, s := range stations {
+					transaction := m.Transaction{}
+					handler.db.Table("transaction").Where("member_id = ? AND station_id = ?",member_id,s).First(&transaction)	
+					
+					if transaction.MemberId == "" {
+						handler.db.Exec("INSERT INTO transaction VALUES (null,?,?,?,?,?)",member_id,s,now,now,transaction_type)
+					} else {
+						handler.db.Exec("UPDATE transaction SET transaction_type = ? WHERE id = ? ","vip",transaction.Id)
+					}
 				}
+				respond(http.StatusCreated,"New transaction successfully created!",c,false)				
+			} else {
+				respond(http.StatusBadRequest,"Member not found!",c,true)	
 			}
-			respond(http.StatusCreated,"New transaction successfully created!",c,false)		
 		} else {
 			station := m.Station{}
 			handler.db.Table("station").Where("station_id = ?",station_id).First(&station)
