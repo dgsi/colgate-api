@@ -10,7 +10,7 @@ import (
 	 h "colgate/dgsi/api/handlers"
 	 "colgate/dgsi/api/config"
 	"github.com/jinzhu/gorm"
-	//"github.com/gin-gonic/contrib/jwt"
+	//jwt "github.com/dgrijalva/jwt-go"
 )
 
 func main() {
