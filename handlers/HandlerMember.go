@@ -36,6 +36,7 @@ func (handler MemberHandler) Create(c *gin.Context) {
 	region := c.PostForm("region")
 	municipality := c.PostForm("city")
 	is_visited,_ := strconv.ParseBool(c.PostForm("is_visited"))
+	consent,_ := strconv.ParseBool(c.PostForm("consent"))
 	
 	member := m.WPMember{}
 	handler.db.Table("wp_members").Where("member_email_address = ?",email).First(&member)
@@ -50,7 +51,7 @@ func (handler MemberHandler) Create(c *gin.Context) {
 		newId, err := strconv.Atoi(lastMemberId)
 		if err == nil {
 			newMemberId := strconv.Itoa(newId + 1)
-			handler.db.Exec("INSERT INTO wp_members(member_id,member_fname,member_lname,member_email_address,member_mobile,member_registration_date,member_country_region,member_city,is_visited) VALUES (?,?,?,?,?,?,?,?,?)",newMemberId,first_name,last_name,email,contact_no,now,region,municipality,is_visited)
+			handler.db.Exec("INSERT INTO wp_members(member_id,member_fname,member_lname,member_email_address,member_mobile,member_registration_date,member_country_region,member_city,is_visited,consent_to_user_data) VALUES (?,?,?,?,?,?,?,?,?,?)",newMemberId,first_name,last_name,email,contact_no,now,region,municipality,is_visited,consent)
 	
 			newMember := m.WPMember{};
 			handler.db.Raw("select * from wp_members order by member_id desc limit 1").Scan(&newMember)
