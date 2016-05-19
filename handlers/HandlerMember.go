@@ -3,7 +3,6 @@ package handlers
 import (
 	"net/http"
 	"time"
-	"fmt"
 	"strconv"
 	
 	"github.com/gin-gonic/gin"
@@ -28,36 +27,49 @@ func (handler MemberHandler) Index(c *gin.Context) {
 
 // create new member
 func (handler MemberHandler) Create(c *gin.Context) {
-	now := time.Now().UTC()
 	first_name := c.PostForm("first_name")
 	last_name := c.PostForm("last_name")
 	email := c.PostForm("email")
 	contact_no := c.PostForm("contact_no")
 	region := c.PostForm("region")
-	municipality := c.PostForm("city")
+	city := c.PostForm("city")
 	is_visited,_ := strconv.ParseBool(c.PostForm("is_visited"))
 	consent,_ := strconv.ParseBool(c.PostForm("consent"))
 	
 	member := m.WPMember{}
-	handler.db.Table("wp_members").Where("member_email_address = ?",email).First(&member)
+	query := handler.db.Table("wp_members").Last(&member)
+	var newMemberId string
 
-	if member.MemberEmailAddress != "" {
+	if query.RowsAffected > 0 {
+		newId, _ := strconv.Atoi(member.MemberId)
+		newMemberId = strconv.Itoa(newId + 1)
+	} else {
+		year := strconv.Itoa(time.Now().UTC().Year())
+		newMemberId = year[2:] + "000001"
+	}
+
+	existingMember := m.WPMember{}
+
+	if handler.db.Where("member_email_address = ?",email).First(&existingMember).RowsAffected == 1 {
 		respond(http.StatusBadRequest,"Email already taken!",c,true)	
 	} else {
-		member := m.WPMember{}
-		handler.db.Raw("select * from wp_members order by member_id desc limit 1").Scan(&member)
-		lastMemberId := member.MemberId;
-		fmt.Println("LAST MEMBER ID ----> " + member.MemberId)
-		newId, err := strconv.Atoi(lastMemberId)
-		if err == nil {
-			newMemberId := strconv.Itoa(newId + 1)
-			handler.db.Exec("INSERT INTO wp_members(member_id,member_fname,member_lname,member_email_address,member_mobile,member_registration_date,member_country_region,member_city,is_visited,consent_to_user_data) VALUES (?,?,?,?,?,?,?,?,?,?)",newMemberId,first_name,last_name,email,contact_no,now,region,municipality,is_visited,consent)
-	
-			newMember := m.WPMember{};
-			handler.db.Raw("select * from wp_members order by member_id desc limit 1").Scan(&newMember)
+		newMember := m.WPMember{}
+		newMember.MemberId = newMemberId
+		newMember.MemberFname = first_name
+		newMember.MemberLname = last_name
+		newMember.MemberCountryRegion = region
+		newMember.MemberCity = city
+		newMember.MemberEmailAddress = email
+		newMember.MemberMobile = contact_no
+		newMember.IsVisited = is_visited
+		newMember.ConsentToUserData = consent
+		newMember.MemberRegistrationDate = time.Now().UTC().String()
+
+		result := handler.db.Table("wp_members").Create(&newMember)
+		if result.RowsAffected > 0 {
 			c.JSON(http.StatusCreated,newMember)
 		} else {
-			respond(http.StatusInternalServerError,"failed to convert to int",c,true)
+			respond(http.StatusBadRequest,result.Error.Error(),c,true)
 		}
 	}
 }
