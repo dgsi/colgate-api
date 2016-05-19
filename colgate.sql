@@ -122,7 +122,7 @@ CREATE TABLE `reward` (
   `date_created` datetime DEFAULT NULL,
   `date_updated` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -131,7 +131,6 @@ CREATE TABLE `reward` (
 
 LOCK TABLES `reward` WRITE;
 /*!40000 ALTER TABLE `reward` DISABLE KEYS */;
-INSERT INTO `reward` VALUES (16,'1600002','n/a',0,'2016-05-05 08:15:13','2016-05-05 08:15:13'),(17,'1600001','n/a',0,'2016-05-07 18:23:25','2016-05-07 18:23:25'),(18,'1600003','n/a',0,'2016-05-07 18:26:27','2016-05-07 18:26:27');
 /*!40000 ALTER TABLE `reward` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -175,7 +174,7 @@ CREATE TABLE `transaction` (
   `date_updated` datetime DEFAULT NULL,
   `transaction_type` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -184,7 +183,6 @@ CREATE TABLE `transaction` (
 
 LOCK TABLES `transaction` WRITE;
 /*!40000 ALTER TABLE `transaction` DISABLE KEYS */;
-INSERT INTO `transaction` VALUES (27,'1600002','station001','2016-05-05 08:04:35','2016-05-05 08:04:35','vip'),(28,'1600002','station002','2016-05-05 08:04:35','2016-05-05 08:04:35','vip'),(29,'1600002','station003','2016-05-05 08:04:35','2016-05-05 08:04:35','vip'),(30,'1600002','station004','2016-05-05 08:04:35','2016-05-05 08:04:35','vip'),(31,'1600001','station001','2016-05-05 08:25:16','2016-05-05 08:25:16','vip'),(32,'1600001','station002','2016-05-05 08:25:16','2016-05-05 08:25:16','vip'),(33,'1600001','station003','2016-05-05 08:25:16','2016-05-05 08:25:16','vip'),(34,'1600001','station004','2016-05-05 08:25:16','2016-05-05 08:25:16','vip'),(43,'1600003','station001','2016-05-07 18:23:45','2016-05-07 18:23:45','vip'),(44,'1600003','station002','2016-05-07 18:23:45','2016-05-07 18:23:45','vip'),(45,'1600003','station003','2016-05-07 18:23:45','2016-05-07 18:23:45','vip'),(46,'1600003','station004','2016-05-07 18:23:45','2016-05-07 18:23:45','vip');
 /*!40000 ALTER TABLE `transaction` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -323,7 +321,6 @@ CREATE TABLE `wp_members` (
 
 LOCK TABLES `wp_members` WRITE;
 /*!40000 ALTER TABLE `wp_members` DISABLE KEYS */;
-INSERT INTO `wp_members` VALUES ('1600001','DON','SANTIAGO','NCR','kasmdk','kasmdk@yahoo.com','12841958','16-04-23 11:02:00','2016-04-23 14:54:45',1,'0',NULL,NULL,NULL),('1600002','MARLON','DE GUZMAN','NCR','sakdmakd','kmkm@yahoo.com','19284912','16-04-23 11:02:13','2016-04-23 17:37:18',1,'0',NULL,NULL,NULL),('1600003','JEROME','FABONAN','NCR','smdkamd','kasmdk@yahoo.cm','192845918','16-04-23 11:02:22',NULL,1,'0',NULL,NULL,NULL),('1600004','SHANE','ONTOLAN','NCR','Pasig','ontolanshanejustin@yahoo.com','09178576370','16-04-23 03:28:56',NULL,1,'0',NULL,NULL,NULL),('1600005','Ned','Flanders',NULL,NULL,'ned@flanders.com','09123456789','2016-05-02 07:41:31.663713',NULL,NULL,'0',NULL,NULL,NULL),('1600006','Ted','Flanders',NULL,NULL,'ted@flanders.com','','2016-05-02 09:05:05.577042',NULL,NULL,'0',NULL,NULL,NULL),('1600007','Kobe','Bryant',NULL,NULL,'blackmamba@gmail.com','0917258690','2016-05-02 09:07:24.264228',NULL,NULL,'0',NULL,NULL,NULL),('1600008','Lebrono','Mars','NCR','Taguig','lebronomars@gmail.com','0927136444','2016-05-12 02:06:38.779126',NULL,NULL,'0',NULL,NULL,NULL),('1600009','Hey','You','Region 3','Malolos','aa@gmail.com','966','2016-05-12 02:07:21.54909',NULL,NULL,'0',NULL,NULL,NULL),('1600010','Bbb','Bbb','NCR','Taguig','aabb@gmail.com','09746976767','2016-05-12 08:47:09.144959',NULL,NULL,'0',NULL,1,NULL),('1600011','Pp','Aa','NCR','Caloocan','aa','55','2016-05-12 08:47:39.250591',NULL,NULL,'0',NULL,0,NULL);
 /*!40000 ALTER TABLE `wp_members` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -803,4 +800,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-05-18 23:00:06
+-- Dump completed on 2016-05-19 22:00:14
