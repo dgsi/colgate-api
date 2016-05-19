@@ -88,10 +88,10 @@ func (handler TransactionHandler) Create(c *gin.Context) {
 func (handler TransactionHandler) ShowMemberTransactions(c *gin.Context) {
 	member_id := c.Param("member_id")
 	if member_id != "" {
-		member := m.Member{}
-		handler.db.Table("wp_members").Where("member_id = ?",member_id).First(&member)
+		member := m.WPMember{}
+		query := handler.db.Where("member_id = ?",member_id).First(&member)
 
-		if (member.MemberId != "") {
+		if query.RowsAffected > 0 {
 			transactions := []m.Transaction{}	
 			handler.db.Table("transaction").Where("member_id = ?",member_id).Find(&transactions)
 			c.JSON(http.StatusOK, &transactions)		
